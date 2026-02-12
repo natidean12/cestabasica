@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00b894">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="icone.png">
+
+<link rel="apple-touch-icon" href="icone.png">
+<title>Projeto Comunitário • Doações</title>
+
+<style>
+:root {
+  --primary-color: #00b894;
+  --secondary-color: #0984e3;
+  --vermelho: #ff7675;
+  --text-dark: #2d3436;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #00b894);
+  background-size: 400% 400%;
+  animation: auroraBG 20s ease infinite;
+}
+
+@keyframes auroraBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.circles {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden; z-index: -1;
+}
+.circles li {
+  position: absolute; display: block; list-style: none;
+  width: 20px; height: 20px; background: rgba(255, 255, 255, 0.15);
+  animation: floatUp 25s linear infinite; bottom: -150px;
+}
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+
+@keyframes floatUp {
+  0%{ transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 20%; }
+  100%{ transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(15px);
+  padding: 40px 30px;
+  border-radius: 30px;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.4);
+  text-align: center;
+  z-index: 1;
+}
+
+h2 { margin-bottom: 8px; color: var(--text-dark); font-size: 28px; font-weight: 800; }
+p.subtitle { color: #636e72; font-size: 14px; margin-bottom: 25px; }
+
+.campo { margin-bottom: 15px; text-align: left; }
+
+input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #dfe6e9;
+  background: #fff;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 15px rgba(0, 184, 148, 0.2);
+}
+
+.erro {
+  color: var(--vermelho);
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 600;
+  display: none;
+}
+
+.erro.ativo { display: block; animation: shake 0.3s; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.sucesso {
+  background: #55efc4;
+  color: #006266;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: none;
+  font-weight: 600;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 10px 20px rgba(0, 184, 148, 0.3);
+}
+
+button:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(0, 184, 148, 0.4); }
+
+.esqueci-senha {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: var(--secondary-color);
+  margin-top: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.toggle { margin-top: 25px; font-size: 14px; color: #636e72; }
+.toggle span { color: var(--secondary-color); cursor: pointer; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<ul class="circles"><li></li><li></li><li></li></ul>
+
+<div class="container">
+  <h2 id="titulo">Entrar</h2>
+  <p class="subtitle" id="subtitulo">Sua ajuda faz a diferença!</p>
+
+  <div class="sucesso" id="mensagemSucesso"></div>
+
+  <div class="campo" id="campoNome" style="display:none;">
+    <input type="text" id="nome" placeholder="Nome completo">
+    <div class="erro" id="erroNome">⚠ Digite seu nome</div>
+  </div>
+
+  <div class="campo">
+    <input type="email" id="email" placeholder="E-mail">
+    <div class="erro" id="erroEmail">⚠ E-mail inválido</div>
+  </div>
+
+  <div class="campo" id="campoSenha">
+    <input type="password" id="senha" placeholder="Senha">
+    <span class="esqueci-senha" id="btnEsqueci">Esqueci minha senha</span>
+    <div class="erro" id="erroSenha">⚠ Senha obrigatória</div>
+  </div>
+
+  <button id="btnPrincipal">Acessar Conta</button>
+
+  <div class="toggle">
+    <span id="togglePreTexto">Ainda não participa?</span>
+    <span id="toggleTexto">Cadastre-se</span>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Estados da tela: 'login', 'cadastro', 'recuperar'
+  let estado = 'login'; 
+
+  const elementos = {
+    titulo: document.getElementById("titulo"),
+    subtitulo: document.getElementById("subtitulo"),
+    campoNome: document.getElementById("campoNome"),
+    btn: document.getElementById("btnPrincipal"),
+    toggleTexto: document.getElementById("toggleTexto"),
+    togglePreTexto: document.getElementById("togglePreTexto"),
+    mensagemSucesso: document.getElementById("mensagemSucesso"),
+    btnEsqueci: document.getElementById("btnEsqueci"),
+    nome: document.getElementById("nome"),
+    email: document.getElementById("email"),
+    senha: document.getElementById("senha")
+  };
+
+  const erros = {
+    nome: document.getElementById("erroNome"),
+    email: document.getElementById("erroEmail"),
+    senha: document.getElementById("erroSenha")
+  };
+
+  function limparTudo() {
+    Object.values(erros).forEach(el => el.classList.remove('ativo'));
+    elementos.mensagemSucesso.style.display = "none";
+  }
+
+  // Alternar para Esqueci Senha
+  elementos.btnEsqueci.addEventListener("click", () => {
+    estado = 'recuperar';
+    limparTudo();
+    elementos.titulo.innerText = "Nova Senha";
+    elementos.subtitulo.innerText = "Digite o e-mail e a nova senha desejada.";
+    elementos.campoNome.style.display = "none";
+    elementos.btn.innerText = "Redefinir Senha";
+    elementos.btnEsqueci.style.display = "none";
+    elementos.togglePreTexto.innerText = "Lembrou?";
+    elementos.toggleTexto.innerText = "Voltar ao login";
+    elementos.senha.placeholder = "Nova Senha";
+  });
+
+  // Alternar entre Login e Cadastro
+  elementos.toggleTexto.addEventListener("click", function() {
+    limparTudo();
+    if (estado === 'login') {
+      estado = 'cadastro';
+      elementos.titulo.innerText = "Criar Conta";
+      elementos.campoNome.style.display = "block";
+      elementos.btn.innerText = "Finalizar Cadastro";
+      elementos.btnEsqueci.style.display = "none";
+      elementos.togglePreTexto.innerText = "Já tem conta?";
+      elementos.toggleTexto.innerText = "Entrar";
+    } else {
+      estado = 'login';
+      elementos.titulo.innerText = "Entrar";
+      elementos.subtitulo.innerText = "Sua ajuda faz a diferença!";
+      elementos.campoNome.style.display = "none";
+      elementos.btn.innerText = "Acessar Conta";
+      elementos.btnEsqueci.style.display = "block";
+      elementos.togglePreTexto.innerText = "Ainda não participa?";
+      elementos.toggleTexto.innerText = "Cadastre-se";
+      elementos.senha.placeholder = "Senha";
+    }
+  });
+
+  elementos.btn.addEventListener("click", function() {
+    limparTudo();
+    let usuarios = JSON.parse(localStorage.getItem("usuariosComunitarios")) || [];
+    const emailVal = elementos.email.value.trim();
+    const senhaVal = elementos.senha.value;
+
+    // 1. Validar campos vazios
+    if (estado === 'cadastro' && elementos.nome.value.trim().length < 3) return erros.nome.classList.add('ativo');
+    if (!emailVal.includes("@")) return erros.email.classList.add('ativo');
+    if (senhaVal.length < 4) return erros.senha.classList.add('ativo');
+
+    if (estado === 'cadastro') {
+      if (usuarios.find(u => u.email === emailVal)) {
+        erros.email.innerText = "⚠ E-mail já cadastrado";
+        return erros.email.classList.add('ativo');
+      }
+      usuarios.push({ nome: elementos.nome.value, email: emailVal, senha: senhaVal });
+      localStorage.setItem("usuariosComunitarios", JSON.stringify(usuarios));
+      elementos.mensagemSucesso.innerText = "✅ Conta criada com sucesso!";
+      elementos.mensagemSucesso.style.display = "block";
+    } 
+    
+   else if (estado === 'login') {
+      const user = usuarios.find(u => u.email === emailVal && u.senha === senhaVal);
+      if (!user) {
+        erros.email.innerText = "⚠ Dados incorretos";
+        erros.email.classList.add('ativo');
+        erros.senha.classList.add('ativo');
+      } else {
+        // 1. Mostra a mensagem de sucesso
+        elementos.mensagemSucesso.innerText = `✅ Bem-vindo, ${user.nome}! Redirecionando...`;
+        elementos.mensagemSucesso.style.display = "block";
+
+        // 2. Aguarda 1 segundo (para o usuário ver o check verde) e pula de tela
+        setTimeout(() => {
+            window.location.href = "principal.html";
+        }, 1200);
+      }
+    }
+    else if (estado === 'recuperar') {
+      const index = usuarios.findIndex(u => u.email === emailVal);
+      if (index === -1) {
+        erros.email.innerText = "⚠ E-mail não encontrado";
+        return erros.email.classList.add('ativo');
+      }
+      usuarios[index].senha = senhaVal;
+      localStorage.setItem("usuariosComunitarios", JSON.stringify(usuarios));
+      elementos.mensagemSucesso.innerText = "✅ Senha alterada com sucesso!";
+      elementos.mensagemSucesso.style.display = "block";
+    }
+  });
+});
+</script>
+</body>
+</html>

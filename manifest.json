@@ -1,0 +1,15 @@
+{
+  "name": "Projeto Comunitário",
+  "short_name": "Doações",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f0c29",
+  "theme_color": "#00b894",
+"icons": [
+    {
+      "src": "icone.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

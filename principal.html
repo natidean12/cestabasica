@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00b894">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="icone.png">
+
+<link rel="apple-touch-icon" href="icone.png">
+<title>Painel Comunitário • Início</title>
+
+<style>
+:root {
+  --primary: #00b894;
+  --secondary: #0984e3;
+  --dark: #2d3436;
+  --light: #f9f9f9;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+/* Header / Menu */
+nav {
+  background: white;
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 20px;
+}
+
+.btn-sair {
+  color: #ff7675;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Banner Principal */
+.hero {
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero h1 { font-size: 32px; margin-bottom: 10px; }
+.hero p { font-size: 18px; opacity: 0.9; }
+
+/* Área de Seleção */
+.container {
+  max-width: 1000px;
+  margin: -50px auto 40px; /* Sobe um pouco para cima do banner */
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, border 0.3s ease;
+  cursor: pointer;
+  border: 3px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary);
+}
+
+.icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: var(--dark);
+}
+
+.card p {
+  color: #636e72;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.btn-acao {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.btn-receber { background: var(--secondary); color: white; }
+.btn-doar { background: var(--primary); color: white; }
+
+.btn-acao:hover { opacity: 0.9; transform: scale(1.05); }
+
+/* Rodapé */
+footer {
+  text-align: center;
+  padding: 40px;
+  color: #b2bec3;
+  font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 24px; }
+  .container { margin-top: 20px; }
+}
+</style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">🤝 Projeto Comunitário</div>
+    <a href="index.html" class="btn-sair" onclick="logout()">Sair</a>
+  </nav>
+
+  <section class="hero">
+    <h1 id="boasVindas">Olá!</h1>
+    <p>O que você deseja fazer hoje?</p>
+  </section>
+
+  <main class="container">
+    
+    <div class="card" onclick="selecionar('receber')">
+      <span class="icon">🛒</span>
+      <h3>Preciso de Ajuda</h3>
+      <p>Se você ou sua família estão precisando de uma cesta básica, cadastre seu pedido aqui.</p>
+      <a href="#" class="btn-acao btn-receber">Solicitar Cesta</a>
+    </div>
+
+    <div class="card" onclick="selecionar('doar')">
+      <span class="icon">🍲</span>
+      <h3>Quero Doar Alimentos</h3>
+      <p>Ajude nossa comunidade doando alimentos não perecíveis ou cestas completas.</p>
+      <a href="#" class="btn-acao btn-doar">Fazer Doação</a>
+    </div>
+
+  </main>
+
+  <footer>
+    &copy; 2026 Projeto Comunitário • Juntos somos mais fortes.
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Tenta pegar o nome do usuário que logou (puxando do último cadastro ou login)
+      // Nota: No mundo real, salvaríamos o 'usuário logado' separadamente.
+      const usuarios = JSON.parse(localStorage.getItem("usuariosComunitarios")) || [];
+      if (usuarios.length > 0) {
+        const ultimoUsuario = usuarios[usuarios.length - 1].nome;
+        const primeiroNome = ultimoUsuario.split(" ")[0];
+        document.getElementById("boasVindas").innerText = `Olá, ${primeiroNome}!`;
+      }
+    });
+    
+function selecionar(tipo) {
+  if(tipo === 'receber') {
+    // Mostra um aviso rápido e muda de tela
+    window.location.href = "solicitar.html";
+  } else {
+    // Quando você criar a tela de doação, mude o nome aqui também
+    window.location.href = "doar.html"; 
+  }
+}
+    function logout() {
+      // Apenas redireciona para o login (em um sistema real, limparíamos a sessão)
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

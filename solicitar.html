@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00b894">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="icone.png">
+
+<link rel="apple-touch-icon" href="icone.png">
+<title>Solicitar Cesta • Projeto Comunitário</title>
+
+<style>
+:root {
+  --primary: #0984e3; 
+  --secondary: #00cec9; /* Um ciano mais vivo */
+  --bg-dark: #0f0c29;
+  --text: #2d3436;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+  /* Fundo Azul Animado */
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #0984e3, #00cec9);
+  background-size: 400% 400%;
+  animation: auroraBG 15s ease infinite;
+}
+
+@keyframes auroraBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Partículas flutuantes */
+.circles {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden; z-index: 0;
+}
+.circles li {
+  position: absolute; display: block; list-style: none;
+  width: 20px; height: 20px; background: rgba(255, 255, 255, 0.1);
+  animation: floatUp 25s linear infinite; bottom: -150px;
+}
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+
+@keyframes floatUp {
+  0%{ transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 20%; }
+  100%{ transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+}
+
+.form-container {
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.header-form {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header-form h2 { color: var(--primary); font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+.header-form p { color: #636e72; font-size: 14px; }
+
+.campo-grupo { margin-bottom: 18px; }
+label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+
+input, textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #edf2f4;
+  border-radius: 14px;
+  font-size: 15px;
+  background: #fcfcfc;
+  transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(9, 132, 227, 0.1);
+}
+
+.row { display: flex; gap: 15px; }
+.row .campo-grupo { flex: 1; }
+
+.btn-enviar {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(9, 132, 227, 0.3);
+}
+
+.btn-enviar:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(9, 132, 227, 0.4); }
+
+.btn-voltar {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #636e72;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-voltar:hover { color: var(--primary); }
+
+#modalSucesso {
+  display: none;
+  text-align: center;
+}
+
+#modalSucesso h3 { color: #00b894; font-size: 24px; margin-bottom: 10px; }
+#modalSucesso p { color: #636e72; margin-bottom: 20px; }
+
+/* Ajuste mobile */
+@media (max-width: 480px) {
+  .form-container { padding: 30px 20px; }
+  .row { flex-direction: column; gap: 0; }
+}
+</style>
+</head>
+<body>
+
+<ul class="circles"><li></li><li></li><li></li></ul>
+
+
+
+<div class="form-container" id="boxForm">
+  <div class="header-form">
+    <h2>Solicitação de Alimentos</h2>
+    <p>Preencha os dados para entrar na lista de auxílio.</p>
+  </div>
+
+  <form id="formSolicitacao">
+    <div class="campo-grupo">
+      <label>Endereço Completo</label>
+      <input type="text" id="endereco" placeholder="Rua, número, bairro" required>
+    </div>
+
+    <div class="row">
+      <div class="campo-grupo">
+        <label>CEP</label>
+        <input type="text" id="cep" placeholder="00000-000" required>
+      </div>
+      <div class="campo-grupo">
+        <label>Pessoas na Casa</label>
+        <input type="number" id="qtdPessoas" min="1" value="1" required>
+      </div>
+    </div>
+
+    <div class="campo-grupo">
+      <label>Telefone de Contato</label>
+      <input type="tel" id="whatsapp" placeholder="(00) 00000-0000" required>
+    </div>
+
+    <div class="campo-grupo">
+      <label>Por que você precisa da doação?</label>
+      <textarea id="motivo" rows="3" placeholder="Conte-nos brevemente sua situação atual..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-enviar">Confirmar Pedido</button>
+    <a href="principal.html" class="btn-voltar">← Voltar ao início</a>
+  </form>
+</div>
+
+<div class="form-container" id="modalSucesso">
+  <div style="font-size: 60px;">✅</div>
+  <h3>Pedido Recebido!</h3>
+  <p>Sua solicitação foi enviada para nossa equipe de voluntários. Entraremos em contato em breve pelo WhatsApp.</p>
+  <br>
+  <button onclick="location.href='principal.html'" class="btn-enviar" style="background: var(--secondary);">Entendido</button>
+</div>
+
+<script>
+  document.getElementById('formSolicitacao').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // ==========================================
+    // CONFIGURAÇÃO: COLOQUE O NÚMERO DO PROJETO ABAIXO
+    // Formato: 55 + DDD + NÚMERO (Tudo junto, sem espaços)
+    const numeroEquipe = "5511968184660"; 
+    // ==========================================
+
+    // Coleta dos dados do formulário
+    const dados = {
+      endereco: document.getElementById('endereco').value,
+      cep: document.getElementById('cep').value,
+      pessoas: document.getElementById('qtdPessoas').value,
+      whatsapp: document.getElementById('whatsapp').value,
+      motivo: document.getElementById('motivo').value
+    };
+
+    // 1. Salva no banco de dados local (localStorage) para registro do site
+    let pedidos = JSON.parse(localStorage.getItem("pedidosCestas")) || [];
+    pedidos.push({
+      ...dados,
+      data: new Date().toLocaleDateString(),
+      hora: new Date().toLocaleTimeString()
+    });
+    localStorage.setItem("pedidosCestas", JSON.stringify(pedidos));
+
+    // 2. Prepara a mensagem formatada para o WhatsApp
+    // %0A é o comando para pular linha
+    const mensagem = `*NOVA SOLICITAÇÃO DE CESTA* 🛒%0A%0A` +
+                     `*Nome:* (Verificar no Cadastro)%0A` +
+                     `*Endereço:* ${dados.endereco}%0A` +
+                     `*CEP:* ${dados.cep}%0A` +
+                     `*Pessoas na casa:* ${dados.pessoas}%0A` +
+                     `*Contato do solicitante:* ${dados.whatsapp}%0A%0A` +
+                     `*Motivo do pedido:*%0A${dados.motivo}`;
+
+    // 3. Define qual link usar (se é o whatsapp web ou o app do celular)
+    const url = `https://api.whatsapp.com/send?phone=${numeroEquipe}&text=${mensagem}`;
+
+    // 4. Executa a ação de abrir o WhatsApp
+    window.open(url, '_blank');
+
+    // 5. Mostra o feedback visual de sucesso na tela do seu site
+    document.getElementById('boxForm').style.display = 'none';
+    document.getElementById('modalSucesso').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>

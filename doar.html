@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00b894">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="icone.png">
+
+<link rel="apple-touch-icon" href="icone.png">
+<title>Doar Alimentos • Projeto Comunitário</title>
+
+<style>
+:root {
+  --primary: #00b894; 
+  --secondary: #55efc4;
+  --bg-dark: #004d40;
+  --text: #2d3436;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+  background: linear-gradient(-45deg, #004d40, #1b5e20, #00b894, #55efc4);
+  background-size: 400% 400%;
+  animation: auroraBG 15s ease infinite;
+}
+
+@keyframes auroraBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.circles {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden; z-index: 0;
+}
+.circles li {
+  position: absolute; display: block; list-style: none;
+  width: 20px; height: 20px; background: rgba(255, 255, 255, 0.1);
+  animation: floatUp 25s linear infinite; bottom: -150px;
+}
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 30px; height: 30px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+
+@keyframes floatUp {
+  0%{ transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 20%; }
+  100%{ transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+}
+
+.form-container {
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.header-form { margin-bottom: 25px; }
+.header-form h2 { color: #1b5e20; font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+.header-form p { color: #636e72; font-size: 14px; }
+
+.itens-urgentes {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+.itens-urgentes h4 { font-size: 12px; text-transform: uppercase; color: #2e7d32; margin-bottom: 5px; font-weight: 800; }
+.itens-urgentes p { font-size: 14px; color: #388e3c; font-weight: 600; }
+
+.campo-grupo { margin-bottom: 18px; text-align: left; }
+label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+
+input, textarea, select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #edf2f4;
+  border-radius: 14px;
+  font-size: 15px;
+  background: #fcfcfc;
+  transition: 0.3s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary);
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 184, 148, 0.1);
+}
+
+.btn-enviar {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(to right, #1b5e20, #00b894);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(27, 94, 32, 0.3);
+}
+
+.btn-enviar:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(27, 94, 32, 0.4); }
+
+.btn-voltar {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #636e72;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#modalSucesso { display: none; }
+
+@media (max-width: 480px) {
+  .form-container { padding: 30px 20px; }
+}
+</style>
+</head>
+<body>
+
+<ul class="circles"><li></li><li></li><li></li></ul>
+
+
+<div class="form-container" id="boxForm">
+  <div class="header-form">
+    <h2>Doar Alimentos</h2>
+    <p>Sua generosidade alimenta esperanças.</p>
+  </div>
+
+  <div class="itens-urgentes">
+    <h4>🔥 Itens de maior necessidade:</h4>
+    <p>Arroz, Feijão, Óleo, Leite em Pó e Café.</p>
+  </div>
+
+  <form id="formDoacao">
+    <div class="campo-grupo">
+      <label>O que você vai doar?</label>
+      <textarea id="itens" rows="3" placeholder="Ex: 2kg de arroz, 1 pacote de feijão..." required></textarea>
+    </div>
+
+    <div class="campo-grupo">
+      <label>Forma de Entrega</label>
+      <select id="formaEntrega">
+        <option value="Vou levar ao ponto de coleta">Vou levar ao ponto de coleta</option>
+        <option value="Preciso que retirem no meu endereço">Preciso que retirem no meu endereço</option>
+      </select>
+    </div>
+
+    <div class="campo-grupo">
+      <label>Seu Telefone/WhatsApp</label>
+      <input type="tel" id="telDoador" placeholder="(00) 00000-0000" required>
+    </div>
+
+    <button type="submit" class="btn-enviar">Informar Doação</button>
+    <a href="principal.html" class="btn-voltar">← Voltar ao início</a>
+  </form>
+</div>
+
+<div class="form-container" id="modalSucesso">
+  <div style="font-size: 60px; margin-bottom: 20px;">❤️</div>
+  <h3>Obrigado pela Doação!</h3>
+  <p>Sua intenção de doação foi registrada. Clique no botão abaixo para avisar a equipe no WhatsApp.</p>
+  <br>
+  <button id="btnZapFinal" class="btn-enviar">Abrir WhatsApp</button>
+</div>
+
+<script>
+  const form = document.getElementById('formDoacao');
+  let urlZapGlobal = "";
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const numeroEquipe = "5511968184660"; 
+
+    const dados = {
+      itens: document.getElementById('itens').value,
+      forma: document.getElementById('formaEntrega').value,
+      contato: document.getElementById('telDoador').value
+    };
+
+    const mensagem = `*NOVA DOAÇÃO DE ALIMENTOS* 🍲%0A%0A` +
+                     `*Itens:* ${dados.itens}%0A` +
+                     `*Forma de entrega:* ${dados.forma}%0A` +
+                     `*Contato do Doador:* ${dados.contato}`;
+
+    urlZapGlobal = `https://api.whatsapp.com/send?phone=${numeroEquipe}&text=${mensagem}`;
+
+    // ESCONDE o formulário e MOSTRA o sucesso
+    document.getElementById('boxForm').style.display = 'none';
+    document.getElementById('modalSucesso').style.display = 'block';
+  });
+
+  document.getElementById('btnZapFinal').addEventListener('click', function() {
+    window.open(urlZapGlobal, '_blank');
+    window.location.href = 'principal.html';
+  });
+</script>
+
+</body>
+</html>
